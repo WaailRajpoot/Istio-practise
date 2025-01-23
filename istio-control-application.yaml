@@ -2,13 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: istio-control
-  namespace: argocd
+  namespace: istio-system
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/your-repo-url'
+    repoURL: 'https://github.com/WaailRajpoot/Istio-practise.git'
     targetRevision: '1.23.2'
-    path: 'istio-control'
+    path: './istio-control'
     helm:
       valueFiles:
         - values.yaml
