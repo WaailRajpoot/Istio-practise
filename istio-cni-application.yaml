@@ -2,20 +2,21 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: istio-cni
-  namespace: istio-system
+  namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/WaailRajpoot/Istio-practise.git'
     targetRevision: '1.23.2'
-    path: './istio-cni'
+    path: 'istio-cni'
     helm:
       valueFiles:
         - values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: kube-system  
+    namespace: istio-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+
