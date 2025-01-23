@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/WaailRajpoot/Istio-practise.git'
     targetRevision: '1.23.2'
-    path: 'default'
+    path: './default'
     helm:
       valueFiles:
         - values.yaml
