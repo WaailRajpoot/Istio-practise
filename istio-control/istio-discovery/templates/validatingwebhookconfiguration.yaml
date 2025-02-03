@@ -1,5 +1,3 @@
-# Created if this is not a remote istiod, OR if it is and is also a config cluster
-{{- if or (and .Values.istiodRemote.enabled .Values.global.configCluster) (not .Values.istiodRemote.enabled) }}
 {{- if .Values.global.configValidation }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -10,8 +8,6 @@ metadata:
     release: {{ .Release.Name }}
     istio: istiod
     istio.io/rev: {{ .Values.revision | default "default" | quote }}
-    app.kubernetes.io/name: "istiod"
-    {{- include "istio.labels" . | nindent 4 }}
 webhooks:
   # Webhook handling per-revision validation. Mostly here so we can determine whether webhooks
   # are rejecting invalid configs on a per-revision basis.
@@ -64,5 +60,4 @@ webhooks:
           - "{{ .Values.revision }}"
           {{- end }}
 ---
-{{- end }}
 {{- end }}

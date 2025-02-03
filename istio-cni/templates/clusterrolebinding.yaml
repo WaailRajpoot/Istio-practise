@@ -8,8 +8,6 @@ metadata:
     istio.io/rev: {{ .Values.revision | default "default" }}
     install.operator.istio.io/owning-resource: {{ .Values.ownerName | default "unknown" }}
     operator.istio.io/component: "Cni"
-    app.kubernetes.io/name: {{ template "name" . }}
-    {{- include "istio.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -19,7 +17,7 @@ subjects:
   name: {{ template "name" . }}
   namespace: {{ .Release.Namespace }}
 ---
-{{- if .Values.repair.enabled }}
+{{- if .Values.cni.repair.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -30,8 +28,6 @@ metadata:
     istio.io/rev: {{ .Values.revision | default "default" }}
     install.operator.istio.io/owning-resource: {{ .Values.ownerName | default "unknown" }}
     operator.istio.io/component: "Cni"
-    app.kubernetes.io/name: {{ template "name" . }}
-    {{- include "istio.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "name" . }}
@@ -42,7 +38,7 @@ roleRef:
   name: {{ template "name" . }}-repair-role
 {{- end }}
 ---
-{{- if .Values.ambient.enabled }}
+{{- if .Values.cni.ambient.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -53,8 +49,6 @@ metadata:
     istio.io/rev: {{ .Values.revision | default "default" }}
     install.operator.istio.io/owning-resource: {{ .Values.ownerName | default "unknown" }}
     operator.istio.io/component: "Cni"
-    app.kubernetes.io/name: {{ template "name" . }}
-    {{- include "istio.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "name" . }}

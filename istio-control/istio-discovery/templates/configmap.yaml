@@ -65,7 +65,11 @@
       {{- end }}
       {{- end }}
       {{- if .Values.global.remotePilotAddress }}
+      {{- if .Values.pilot.enabled }}
+      discoveryAddress: {{ printf "istiod-remote.%s.svc" .Release.Namespace }}:15012
+      {{- else }}
       discoveryAddress: {{ printf "istiod.%s.svc" .Release.Namespace }}:15012
+      {{- end }}
       {{- else }}
       discoveryAddress: istiod{{- if not (eq .Values.revision "") }}-{{ .Values.revision }}{{- end }}.{{.Release.Namespace}}.svc:15012
       {{- end }}
@@ -76,7 +80,7 @@
 {{- $originalMesh := include "mesh" . | fromYaml }}
 {{- $mesh := mergeOverwrite $originalMesh .Values.meshConfig }}
 
-{{- if .Values.configMap }}
+{{- if .Values.pilot.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -87,8 +91,6 @@ metadata:
     install.operator.istio.io/owning-resource: {{ .Values.ownerName | default "unknown" }}
     operator.istio.io/component: "Pilot"
     release: {{ .Release.Name }}
-    app.kubernetes.io/name: "istiod"
-    {{- include "istio.labels" . | nindent 4 }}
 data:
 
   # Configuration file for the mesh networks to be used by the Split Horizon EDS.

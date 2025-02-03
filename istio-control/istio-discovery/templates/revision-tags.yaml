@@ -1,7 +1,6 @@
 # Adapted from istio-discovery/templates/mutatingwebhook.yaml
 # Removed paths for legacy and default selectors since a revision tag
 # is inherently created from a specific revision
-# TODO BML istiodRemote.injectionURL is invalid to set if `istiodRemote.enabled` is false, we should express that.
 {{- $whv := dict
  "revision" .Values.revision
   "injectionPath" .Values.istiodRemote.injectionPath
@@ -31,8 +30,6 @@ a unique prefix to each. */}}
   failurePolicy: Fail
   admissionReviewVersions: ["v1"]
 {{- end }}
-# Not created if istiod is running remotely
-{{- if not .Values.istiodRemote.enabled }}
 {{- range $tagName := $.Values.revisionTags }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
@@ -49,12 +46,6 @@ metadata:
     operator.istio.io/component: "Pilot"
     app: sidecar-injector
     release: {{ $.Release.Name }}
-    app.kubernetes.io/name: "istiod"
-    {{- include "istio.labels" $ | nindent 4 }}
-{{- if $.Values.sidecarInjectorWebhookAnnotations }}
-  annotations:
-{{ toYaml $.Values.sidecarInjectorWebhookAnnotations | indent 4 }}
-{{- end }}
 webhooks:
 {{- include "core" (mergeOverwrite (deepCopy $whv) (dict "Prefix" "rev.namespace.") ) }}
   namespaceSelector:
@@ -147,5 +138,4 @@ webhooks:
 
 {{- end }}
 ---
-{{- end }}
 {{- end }}
